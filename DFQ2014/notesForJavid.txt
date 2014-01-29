@@ -1,0 +1,47 @@
+Notes for Javid.
+
+I took out the (+1) in the body of CodeMethod.getStatements(), and rewrote the unit test to:
+
+	@Test
+	public void testGetStatementsWithWeirdSwapLines() throws DFQException {
+		int lineNumber = 15;
+		String stmtText = "Player player2 = new Player(\"Joan\");";
+		
+		CodeClass codeClass = this.app.getClassByName("GameTest");
+		CodeMethod method = codeClass.getMethodByName("testGameResigned");
+		
+		Statement stmt = method.getStatementByLineNumber(lineNumber);
+		
+		Map<Integer, Statement> allStmt = method.getStatements();
+		Statement stmt2 = allStmt.get(lineNumber);
+		
+		assertEquals(lineNumber, stmt.getLineNumber());
+		assertEquals(stmtText, stmt.getStatementText());
+		
+		assertEquals(lineNumber, stmt2.getLineNumber());
+		assertEquals(stmtText, stmt2.getStatementText());
+		
+		assertEquals(stmt.getStatementText(), stmt2.getStatementText());
+	}
+	
+The test now passes for me.  I don't see any weird change in the sequence of statement, I'm afraid.
+If it is still happening for you, then it seems it must be something about your particular set-up.
+When I have encountered this kind of thing before, it has been connected to a faulty build.  So it
+might be worth creating a whole new project, copying across the course files, and getting Eclipse to
+recompile the whole thing (after closing all other projects)?
+
+
+I was getting concerned about the large amount of technical debt that is accumulating in your code,
+and so I spent a couple of hours sorting out the most obvious problems.  I've corrected all the 
+"throws" declarations, refactored some aspects of the OO design (most notably, removing unwanted
+fields), removed a lot of code duplication and generally improved the quality of the code throughout.
+In the process, I have created a lot of exceptions, and I think the number of exceptions we have now
+is starting to feel like a code smell.  So we may want to look at them at some point, and see if we
+can cut down the numbers required, by using internal exception messages.
+
+In the meantime, your code will feel a little strange, but I hope you will see the point of each of
+the changes I have made.  It will probably useful to use Eclipse's CompareTo functionality to look
+at the differences between my versions of the code and yours - and to make sure you understand each
+change, and can see the rationale.
+
+  

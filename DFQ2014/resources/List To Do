@@ -1,0 +1,112 @@
+- Four points for writing of test  cases:
+define expected output
+construct one or more objects of the class
+apply methods to the object
+display results of the method call
+
+
+- Add some code during the initialisation of the Application that makes change to XML
+file (tarantula.xml). Must make a copy of the tarantula.xml file for safety.
+May use XSLT to make the change? XSLT examples are in the Saxon samples. Use the latest
+version of Saxon. 
+
+- Refactoring in CodeClass 
+do we need to move extractMethod to CodeMethod class? Should not be on CodeClass 
+
+- allow Saxon to query a document with namespaces and with a declared schema. 
+
+Error message problems 
+
+- create classes method returns when class file on the production class list does not exists.
+System complains the properties file doesn't exists.
+
+
+- How to convert String[] to List<String>: or How to convert an array to arrayList
+	String [] strings = new String [] {"Game", "GameTest", "Player"};
+	or 
+	String[] words = {"000", "aaa", "bbb", "ccc", "ddd"}; and then
+	List<String> stringList = new ArrayList<String>(Arrays.asList(strings));
+
+	or
+		
+	List myList = new ArrayList();
+	String[] words = {"000", "aaa", "bbb", "ccc", "ddd"};
+	Collections.addAll(myList, words);
+
+- How to convert an Array to List and sort Example:
+     public class Sort {
+     public static void main(String args[]) {
+          String[] strArray = new String[] { "Java", "Source", "And", "and",
+               "Support", "java2s" };
+
+    List l = Arrays.asList(strArray);
+    Collections.sort(l);
+    System.out.println(l);
+  }
+}
+
+- How to convert List to Array example:
+    class ToArray {
+    	    List list = new ArrayList();
+		    list.add("Blobbo");
+		    list.add("Cracked");
+		    list.add("Dumbo");
+		    // list.add(new Date()); // Don't mix and match!
+		
+		    // Convert a collection to Object[], which can store objects
+		    // of any type.
+		    Object[] ol = list.toArray();
+		    System.out.println("Array of Object has length " + ol.length);
+		
+		    // This would throw an ArrayStoreException if the line
+		    // "list.add(new Date())" above were uncommented.
+		    String[] sl = (String[]) list.toArray(new String[0]);
+		    System.out.println("Array of String has length " + sl.length);
+
+- How to merge 2 Arrays or simialry 2 Lists: 
+
+      String a[] = { "A", "E", "I" };
+      String b[] = { "O", "U" };
+      List list = new ArrayList(Arrays.asList(a));
+      list.addAll(Arrays.asList(b));
+      Object[] c = list.toArray();
+      System.out.println(Arrays.toString(c));
+
+
+- Sorting methods: 
+Collections.sort(actualClassNames , Ordering.explicit(stringList));
+Ordering.explicit(actualClassNames);
+	
+--- Eclipse: 
+		someMethod(Type type){
+		Method[] methods = type.getMethods();
+		for (Method method : methods) {
+
+			System.out.println("Method name " + method.getElementName());
+			System.out.println("Signature " + method.getSignature());
+			System.out.println("Return Type " + method.getReturnType());
+
+- Reflection
+		Class<ProductionClass> aClass = ProductionClass.class;
+		String className = aClass.getSimpleName(); // if class name needed
+		Method[] method = aClass.getMethods(); 
+		
+		String methodsName = null;
+		for (Method arrayOfMethods : method) {
+			methodsName = arrayOfMethods.getName();
+			CodeMethod codeMethod = new CodeMethod(methodsName);
+			addMethod(codeMethod);
+
+- String manipulation:
+	String[] stm = method.split("<>");
+			for (int i = 0; i < stm.length; i++){
+				String [] subbits = stm[i].split("()");
+				for (int j = 0; j < subbits.length; j++){
+					String [] subsubbits = subbits[j].split("");
+					String name = subsubbits[0].substring(2, subsubbits[0].length() -2);
+					
+- Xdm Proble:
+This forces anyone using this property to have a try catch block when they should only need a simple null check.  
+System.InvalidCastException: Unable to cast object of type 'Saxon.Api.XdmEmptySequence' to type 'Saxon.Api.XdmNode'.   at Saxon.Api.XdmNode.get_Parent()
+
+					

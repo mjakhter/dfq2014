@@ -1,0 +1,5 @@
+This is not a properties file.
+
+Used in LoadApplicationTest.testReportsAttemptToReadNonPropertiesFileAsPropertiesFile()
+
+The test attempts to load this file as a properties file, which it (clearly) is not.
