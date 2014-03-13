@@ -7,13 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /*
@@ -34,7 +30,8 @@ public class CodeMethod {
 
 	private int startLineNumber;
 	private int endLineNumber;
-
+	
+		
 	// Constructor 
 	public CodeMethod(String name, String methodSignature, CodeClass parentClass) throws DFQException {
 		this.name = name;
@@ -98,40 +95,29 @@ public class CodeMethod {
 	}
 	
 	private void extractQueries() throws DFQException {
-		List<Query>  allQueries = findAllQueriesInThisMethod();
-		queries.addAll(allQueries);
-	}
-
-	private List<Query> findAllQueriesInThisMethod() throws DFQException {		
-		List<Statement> queryStmts = extractedQueryStatements();
-		Query query = new Query(this, queryStmts);
-		if (query.getStatements().isEmpty()) {
-			//TODO
-			
+		for (Statement stmt : statements.values()) {
+			if (isTheStatementAQuery(stmt)) {
+				List<Statement> queryStmts = new ArrayList<Statement>();
+				queryStmts.add(stmt);
+				Query query = new Query(this, queryStmts);
+				queries.add(query);
+			} 
 		}
-		List<Query> queriesFound = Arrays.asList(query);
-		return queriesFound;
 	}
 
-	private List<Statement> extractedQueryStatements() throws DFQException {
-		List<Statement> queryStmts = new ArrayList<Statement>();
-		for (Statement stmtValue : statements.values()) {		
-			if (stmtValue.getStatementText().contains("createQuery")) { 
-				queryStmts.add(stmtValue);
-			} else if (stmtValue.getStatementText().contains("whereClause")) {
-				queryStmts.add(stmtValue);
-			} else if (stmtValue.getStatementText().contains("nameMatches = fetchSurnameMatches")) {  
-				queryStmts.add(stmtValue);
-			} else if (stmtValue.getStatementText().contains("mobileMatches = fetchMobileMatches")) { 
-				queryStmts.add(stmtValue);
-			} else if (stmtValue.getStatementText().contains("nameMatches.addAll(mobileMatches)")) {
-				queryStmts.add(stmtValue);
-			}		
-		}
-		return queryStmts;
+
+	private boolean isTheStatementAQuery(Statement stmt) {
+		if(stmt.getStatementText().contains("whereClause = \"forename")
+				|| stmt.getStatementText().contains("whereClause += \"and surname")
+				|| stmt.getStatementText().contains("list()")){
+			return true;
+		} else if (stmt.getStatementText().contains("list()")
+				|| stmt.getStatementText().contains("(mobileMatches)")) {
+			return true;
+		} 
+		return false;
 	}
 
-	
 	// Getter and setters
 
 	public String getName() {
@@ -193,14 +179,14 @@ public class CodeMethod {
 		return null;
 	}
 
-	public Query getQueryByStartingLineNumber(int lineNum) throws DFQException, QueryWithGivenStartNumberNotFoundException {
-		for (Query qStmt: this.queries) {			
-			//if (lineNum < qStmt.getStatements().get(0).getLineNumber()) {
-			//	throw new QueryWithGivenStartNumberNotFoundException();
-			//}
-			List<Statement> qStmts = qStmt.getStatements();
-			Query query = new Query(this, qStmts);
-			return query;
+	
+	public Query getQueryByStartingLineNumber(int lineNum) throws DFQException {
+		for(Query query:queries) {
+			Statement queryLine = query.getMethod().getStatementByLineNumber(lineNum);
+			List<Statement> queryStmts = new ArrayList<Statement>();
+			queryStmts.add(queryLine);
+			Query queryByLineNum = new Query(this, queryStmts);
+			return queryByLineNum;
 		}
 		throw new QueryWithGivenLineNumberNotFoundException();		
 	}
@@ -208,4 +194,5 @@ public class CodeMethod {
 	public List<Query> getQueries() throws DFQException {
 		return this.queries;
 	}
+
 }
