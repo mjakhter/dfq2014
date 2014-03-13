@@ -194,5 +194,5 @@ public class CodeMethod {
 	public List<Query> getQueries() throws DFQException {
 		return this.queries;
 	}
-
+	
 }
